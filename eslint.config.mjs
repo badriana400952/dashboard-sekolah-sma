@@ -7,12 +7,17 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
   ]),
+  // Tambahkan rules khusus
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // ❌ matikan warning untuk any
+    },
+  },
 ]);
 
 export default eslintConfig;

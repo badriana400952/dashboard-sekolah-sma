@@ -1,0 +1,158 @@
+/* ================= FONT ================= */
+table {
+  font-family: 'Nunito', sans-serif;
+}
+
+.custom-table table {
+  border-bottom:1px solid #e5e7eb; /* gray-200 */
+}
+
+/* ================= TABLE ================= */
+.custom-table table > thead > tr > th {
+  border-collapse: collapse;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  background-color: #1d293d;
+  padding: 12px;
+  font-weight: 800;
+  color: #f6f7fa; /* gray-800 */
+}
+
+
+
+.custom-table table > tbody > tr > td {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  
+}
+
+/* ================= DARK MODE ================= */
+html.dark .custom-table table > thead > tr > th {
+  border-color: #000000;
+  background-color: #000000;
+  color: #e5e7eb; /* white-dark */
+  
+}
+
+html.dark .custom-table table > tbody > tr > td {
+  border-color: #000000;
+  background-color: #0e1726;
+  color: #e5e7eb;
+  
+}
+
+/* ================= CHILD TABLE ================= */
+.children-table table > thead > tr > th {
+  border-collapse: collapse;
+  border: 1px solid #f3f4f6; /* gray-100 */
+  background-color: #f3f4f6;
+  padding: 4px 12px;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.children-table table > tbody > tr > td {
+  padding: 0 12px;
+  border: 1px solid #f3f4f6;
+}
+
+html.dark .children-table table > thead > tr > th {
+  border-color: #000000;
+  background-color: #000000;
+  color: #e5e7eb;
+}
+
+html.dark .children-table table > tbody > tr > td {
+  border-color: #000000;
+  background-color: #0e1726;
+  color: #e5e7eb;
+}
+
+/* ================= MANTINE ================= */
+.mantine-Paper-root {
+  z-index: 9999 !important;
+}
+
+.mantine-Pagination-control[data-active] {
+  background-color: #f3f4f6; /* white-light */
+  font-weight: 600;
+  color: #000000;
+}
+
+html.dark .mantine-Pagination-control[data-active] {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.mantine-spi3wj {
+  border: none;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+html.dark .mantine-spi3wj {
+  color: #e5e7eb;
+}
+
+html.dark .custom-table .mantine-ooem79 {
+  background-color: #000000;
+}
+
+/* ================= MULTISELECT ================= */
+.mantine-MultiSelect-input {
+  max-height: 150px;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mantine-MultiSelect-input::-webkit-scrollbar {
+  display: none;
+}
+
+/* ================= STEPPER ================= */
+.mantine-qo482m {
+  margin-left: auto;
+  margin-right: auto;
+  width: 66.6667%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ================= PRINT ================= */
+.table-print,
+.table-print th,
+.table-print td {
+  border-collapse: collapse;
+  border: 1px solid #d1d5db; /* gray-300 */
+}
+
+.table-print thead tr th,
+.table-print tbody tr td {
+  padding: 4px 8px;
+}
+
+/* ================= PRINT MODE ================= */
+@media screen {
+  .print-only {
+    visibility: hidden;
+  }
+}
+
+@media print {
+  .custom-table {
+    display: table !important;
+    width: 110% !important;
+  }
+
+  
+
+  .custom-table th,
+  .custom-table td {
+    white-space: normal !important;
+  }
+}
+
+/* ================= POPUP ================= */
+.mantine-Popover-dropdown {
+  z-index: 11000 !important;
+}

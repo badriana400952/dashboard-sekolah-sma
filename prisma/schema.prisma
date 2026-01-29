@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model TahunAjaran {
+  id            Int      @id @default(autoincrement())
+  nama          String
+  tahun_mulai   DateTime
+  tahun_selesai DateTime
+  is_active     Boolean  @default(false)
+  created_at    DateTime @default(now())
+  kelas_siswa KelasSiswa[]
+}
+
+model Siswa {
+  id                 Int      @id @default(autoincrement())
+  nis                Int      @unique
+  nama_siswa         String
+  nama_lengkap_siswa String
+  jenis_kelamin      String
+  ttl                DateTime
+  agama              String
+  nama_ibu           String
+  no_hp_ortu         String
+  email_ortu         String
+  created_at         DateTime @default(now())
+
+  kelas_siswa KelasSiswa[]
+}
+
+model Kelas {
+  id      Int    @id @default(autoincrement())
+  nama    String
+  tingkat Int
+  jurusan String
+
+  kelas_siswa KelasSiswa[]
+  created_at  DateTime     @default(now())
+}
+
+model KelasSiswa {
+  id Int @id @default(autoincrement())
+
+  kelas_id Int
+  siswa_id Int
+  tahun_ajaran_id Int
+
+  siswa Siswa @relation(fields: [siswa_id], references: [id])
+  kelas Kelas @relation(fields: [kelas_id], references: [id])
+  tahun_ajaran TahunAjaran @relation(fields: [tahun_ajaran_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@unique([siswa_id, kelas_id, tahun_ajaran_id])
+}
+model Matapelajaran {
+  id                         Int      @id @default(autoincrement())
+  created_at                 DateTime @default(now())
+  pendidikan_agama           String
+  pendidikan_kewarganegaraan String
+  bahasa_indonesia           String
+  bahasa_inggris             String
+  bahasa_jawa                String
+  matematika                 String
+  ilmu_pengetahuan_alam      String
+  ilmu_pengetahuan_sosial    String
+  seni_budaya                String
+  penjas                     String
+}
