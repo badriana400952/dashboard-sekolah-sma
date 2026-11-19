@@ -1,26 +1,33 @@
 import Modal from '@/components/ui/animated-modal'
 import { Button } from '@/components/ui/button'
 import ContextDataTable from '@/components/ui/dataTable'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Selects } from '@/components/ui/selects'
+import useOptionTahunAjaran from '@/hooks/options/useOptionTahunAjaran'
 import useSiswa from '@/hooks/siswa/useSiswa'
-import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import TambahKelas from './tambah-kelas'
-import useKelasSiswa from '@/hooks/kelas-siswa/useKelasSiswa'
-import { KelasSiswa } from '@/interface/kelas-siswa'
-
-const Siswa = (props) => {
-    const { siswa, handleEdit, setSelectedSiswa, selectedSiswa, loading } = useSiswa()
-    const { handleGetKelasSiswa, kelasSiswa } = useKelasSiswa()
+import { useState } from 'react'
+import TambahKelas from './edit-siswa'
+import useKelas from '@/hooks/options/useKelas'
+import { Input } from '@/components/ui/input'
+import type { Siswa } from '@/interface/siswa';
+const Siswa = () => {
+    const { 
+        siswa, 
+        selectedSiswa, 
+        loading, 
+        params, 
+        record,
+        setRecord,
+        handleEdit, 
+        handleGetSiswa, 
+        setSelectedSiswa, 
+        setParams, 
+        handleDelete } = useSiswa()
+    const { optTahunAjaran } = useOptionTahunAjaran()
+    const { optionKelas } = useKelas()
     const [modals, setModals] = useState(false)
-    const [ids, setIds] = useState(0)
-    useEffect(() => {
-        handleGetKelasSiswa()
-    }, [])
 
-    console.log({ kelasSiswa })
     return (
         <div className='flex-col justify-center p-4'>
             <div className='p-2 flex justify-between items-end mb-5' >
@@ -40,27 +47,46 @@ const Siswa = (props) => {
                         <label htmlFor="tahun" className=''>Tahun Ajaran</label>
                     </div>
                     <div className=" w-full  ">
-                        <Input type="text" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <Selects
+                            value={params?.tahun_ajaran_id}
+                            data={optTahunAjaran}
+                            placeholder="Pilih Tahun Ajaran"
+                            className='w-full'
+                            onChange={((value) => setParams({ ...params, tahun_ajaran_id: String(value) }))}
+                        />
                     </div>
                 </div>
-                <div className="flex justify-between p-1 px-3 gap-4">
-                    <div className='flex-col justyfy-start gap-2 flex w-full'>
-                        <label htmlFor="semester" className=''>Semester</label>
-                    </div>
-                    <div className=" w-full  ">
-                        <Input type="text" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                    </div>
-                </div>
+
                 <div className="flex justify-between p-1 px-3 gap-4">
                     <div className='flex-col justyfy-start gap-2 flex w-full'>
                         <label htmlFor="kelas" className=''>Kelas</label>
                     </div>
                     <div className="w-full">
-                        <Input type="text" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <Selects
+                            value={params?.kelas_id}
+                            data={optionKelas}
+                            placeholder="Pilih Kelas"
+                            className='w-full'
+                            onChange={((value) => setParams({ ...params, kelas_id: String(value) }))}
+                        />
+                    </div>
+                </div>
+                <div className="flex justify-between p-1 px-3 gap-4">
+                    <div className='flex-col justyfy-start gap-2 flex w-full'>
+                        <label htmlFor="nama_siswa" className=''>Nama Siswa</label>
+                    </div>
+                    <div className="w-full">
+                        <Input 
+                            type="text" 
+                            placeholder='Masukkan Nama Siswa'
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+                            value={params?.nama_siswa || ''}
+                            onChange={(e) => setParams({...params, nama_siswa: e.target.value})}
+                        />
                     </div>
                 </div>
                 <div className="flex  justify-between p-1 px-3 gap-4">
-                    <Button type="button" className='mt-6 mb-6 px-6 bg-[#1d293d] text-white hover:bg-[#2e446a]' >
+                    <Button type="submit" onClick={handleGetSiswa} className='mt-6 mb-6 px-6 bg-[#1d293d] text-white hover:bg-[#2e446a]' >
                         Cari Siswa
                     </Button>
                 </div>
@@ -73,8 +99,8 @@ const Siswa = (props) => {
                 <div className="w-full  flex justify-start p-1 px-3 gap-4 mt-2">
                     <div className='flex flex-col gap-4'>
                         <Label>Tahun Ajaran</Label>
-                        <Label>Semester</Label>
                         <Label>Kelas</Label>
+                        <Label>Nama Siswa</Label>
                     </div>
                     <div className='flex flex-col gap-4'>
                         <Label>:</Label>
@@ -82,93 +108,85 @@ const Siswa = (props) => {
                         <Label>:</Label>
                     </div>
                     <div className='flex flex-col gap-4'>
-                        <Label>2023/2024</Label>
-                        <Label>Ganjil</Label>
-                        <Label>VI</Label>
+                        <Label>{params?.tahun_ajaran_id ? optTahunAjaran.find(ta => ta.value === params.tahun_ajaran_id)?.label : "2023/2024"}</Label>
+                        <Label>{params?.kelas_id ? optionKelas.find(k => k.value === Number(params.kelas_id))?.label : "VI"}</Label>
+                        <Label>{params?.nama_siswa ? params?.nama_siswa : " "}</Label>
                     </div>
                 </div>
                 <hr className='text-gray-700 my-6' />
                 <div className='p-3'>
-                    <ContextDataTable<KelasSiswa>
+                    <ContextDataTable<Siswa>
                         className="custom-table rounded-md border border-gray-200"
                         withColumnBorders
                         striped
                         withTableBorder
                         highlightOnHover
-                        height={kelasSiswa.length > 10 ? 550 : kelasSiswa.length === 0 ? 100 : "auto"}
-                        records={Array.isArray(kelasSiswa) ? kelasSiswa : []}
+                        height={siswa.length > 10 ? 550 : siswa.length === 0 ? 100 : "auto"}
+                        records={Array.isArray(siswa) ? siswa : []}
                         columns={[
                             {
                                 accessor: "nama_siswa",
                                 title: "Nama",
-                                render: (row) => row.siswa?.nama_siswa,
+                                render: (row) => row?.nama_siswa,
                             },
                             {
                                 accessor: "nama_lengkap_siswa",
                                 title: "Nama Lengkap",
-                                render: (row) => row.siswa?.nama_lengkap_siswa,
+                                render: (row) => row?.nama_lengkap_siswa,
                             },
                             {
                                 accessor: "jenis_kelamin",
                                 title: "Jenis Kelamin",
-                                render: (row) => row.siswa?.jenis_kelamin,
+                                render: (row) => row?.jenis_kelamin,
                             },
                             {
                                 accessor: "nis",
                                 title: "NIS",
-                                render: (row) => row.siswa?.nis,
+                                render: (row) => row?.nis,
                             },
                             {
-                                accessor: "kelas.nama",
+                                accessor: "nama",
                                 title: "Kelas",
                                 render: (row) => row.kelas?.nama,
                             },
                             {
-                                accessor: "tahun_ajaran.nama",
+                                accessor: "nama",
                                 title: "Tahun Ajaran",
                                 render: (row) => row.tahun_ajaran?.nama,
                             },
                             {
                                 accessor: "agama",
                                 title: "Agama",
-                                render: (row) => row.siswa?.agama,
+                                render: (row) => row?.agama,
                             },
                             {
                                 accessor: "nama_ibu",
                                 title: "Nama Ibu",
-                                render: (row) => row.siswa?.nama_ibu,
+                                render: (row) => row?.nama_ibu,
                             },
                             {
                                 accessor: "no_hp_ortu",
                                 title: "No HP Orang Tua",
-                                render: (row) => row.siswa?.no_hp_ortu,
+                                render: (row) => row?.no_hp_ortu,
                             },
                             {
                                 accessor: "email_ortu",
                                 title: "Email Orang Tua",
-                                render: (row) => row.siswa?.email_ortu,
+                                render: (row) => row?.email_ortu,
                             },
                         ]}
                         contextMenuItems={(row) => [
                             {
-                                label: "Lihat Detail",
-                                onClick: () => console.log("Detail:", row),
-                            },
-                            {
                                 label: "Edit Nilai",
-                                onClick: () => console.log("Edit:", row),
-                            },
-                            {
-                                label: "Tambah Kelas",
                                 onClick: () => {
-                                    setIds(row.siswa_id) // ⬅️ FIX
+                                    setRecord({...row})
                                     setModals(true)
                                 },
                             },
                             {
                                 label: "Hapus",
                                 color: "red",
-                                onClick: () => console.log("Hapus:", row.id),
+                                onClick: () => handleDelete(row.id), // ⬅️ FIX
                             },
                         ]}
                     />
@@ -179,11 +197,11 @@ const Siswa = (props) => {
             <Modal
                 opened={modals}
                 onClose={() => setModals(false)}
-                size="md"
-                title={"Tambah Kelas"}
+                size="xl"
+                title={"Edit Siswa"}
                 centered
             >
-                <TambahKelas setModals={setModals} modals={modals} ids={ids} handleEdit={handleEdit} setSelectedSiswa={setSelectedSiswa} selectedSiswa={selectedSiswa} loading={loading} />
+                <TambahKelas setModals={setModals} modals={modals} record={record} handleEdit={handleEdit} loading={loading} setRecord={setRecord} />
             </Modal>
 
         </div >

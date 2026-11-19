@@ -17,7 +17,8 @@ export interface Siswa {
   no_hp_ortu: string;
   email_ortu: string;
   created_at: string; 
-  kelas_id: number | null;
+  kelas_id: number | null |string;
+  tahun_ajaran_id: number | null |string;
   kelas: Kelas | null;
 }
 

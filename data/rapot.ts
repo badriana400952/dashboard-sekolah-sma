@@ -57,7 +57,7 @@ export const nilaiSiswa = [
   },
   {
     no: 8,
-    mataPelajaran: "Penjas Orkes",
+    mataPelajaran: "Penjaskes",
     kkm: 70,
     nilai: 70,
     huruf: "Tujuh Puluh",

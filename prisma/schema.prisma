@@ -14,13 +14,15 @@ datasource db {
 }
 
 model TahunAjaran {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   nama          String
   tahun_mulai   DateTime
   tahun_selesai DateTime
-  is_active     Boolean  @default(false)
-  created_at    DateTime @default(now())
-  kelas_siswa KelasSiswa[]
+  is_active     Boolean      @default(false)
+  created_at    DateTime     @default(now())
+  kelas_siswa   KelasSiswa[]
+  siswa         Siswa[]
+  Rapor         Rapor[]
 }
 
 model Siswa {
@@ -36,34 +38,43 @@ model Siswa {
   email_ortu         String
   created_at         DateTime @default(now())
 
+  kelas_id        Int?
+  tahun_ajaran_id Int?
+
+  kelas        Kelas?       @relation(fields: [kelas_id], references: [id], onDelete: Cascade)
+  tahun_ajaran TahunAjaran? @relation(fields: [tahun_ajaran_id], references: [id], onDelete: Cascade)
+
   kelas_siswa KelasSiswa[]
+  rapor       Rapor[]
 }
 
 model Kelas {
-  id      Int    @id @default(autoincrement())
-  nama    String
-  tingkat Int
-  jurusan String
-
+  id          Int          @id @default(autoincrement())
+  nama        String
+  tingkat     Int
+  jurusan     String
+  siswa       Siswa[]
   kelas_siswa KelasSiswa[]
   created_at  DateTime     @default(now())
+  Rapor       Rapor[]
 }
 
 model KelasSiswa {
   id Int @id @default(autoincrement())
 
-  kelas_id Int
-  siswa_id Int
+  kelas_id        Int
+  siswa_id        Int
   tahun_ajaran_id Int
 
-  siswa Siswa @relation(fields: [siswa_id], references: [id])
-  kelas Kelas @relation(fields: [kelas_id], references: [id])
+  siswa        Siswa       @relation(fields: [siswa_id], references: [id])
+  kelas        Kelas       @relation(fields: [kelas_id], references: [id])
   tahun_ajaran TahunAjaran @relation(fields: [tahun_ajaran_id], references: [id])
 
   created_at DateTime @default(now())
 
   @@unique([siswa_id, kelas_id, tahun_ajaran_id])
 }
+
 model Matapelajaran {
   id                         Int      @id @default(autoincrement())
   created_at                 DateTime @default(now())
@@ -77,4 +88,29 @@ model Matapelajaran {
   ilmu_pengetahuan_sosial    String
   seni_budaya                String
   penjas                     String
+}
+
+model Rapor {
+  id              Int  @id @default(autoincrement())
+  id_siswa        Int?
+  id_kelas        Int?
+  id_tahun_ajaran Int?
+
+  siswa                      Siswa?       @relation(fields: [id_siswa], references: [id], onDelete: Cascade)
+  kelas                      Kelas?       @relation(fields: [id_kelas], references: [id], onDelete: Cascade)
+  tahun_ajaran               TahunAjaran? @relation(fields: [id_tahun_ajaran], references: [id], onDelete: Cascade)
+  bahasa_indonesia           Int
+  pendidikan_agama           Int
+  ilmu_pengetahuan_alam      Int
+  seni_budaya                Int
+  bahasa_inggris             Int
+  pendidikan_kewarganegaraan Int
+  matematika                 Int
+  ilmu_pengetahuan_sosial    Int
+  bahasa_jawa                Int
+  penjaskes                Int
+
+  created_at DateTime @default(now())
+
+  @@unique([id_kelas, id_siswa, id_tahun_ajaran])
 }

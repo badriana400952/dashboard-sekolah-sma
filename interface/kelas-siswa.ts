@@ -4,19 +4,8 @@ export type KelasSiswa = {
   siswa_id: number
   tahun_ajaran_id: number
   created_at: string
+  siswa: Isiswa
 
-  siswa: {
-    id: number
-    nis: number
-    nama_siswa: string
-    nama_lengkap_siswa: string
-    jenis_kelamin: string
-    ttl: string
-    agama: string
-    nama_ibu: string
-    no_hp_ortu: string
-    email_ortu: string
-  }
 
   kelas: {
     id: number
@@ -31,3 +20,15 @@ export type KelasSiswa = {
   }
 }
 
+export interface Isiswa {
+  id: number
+  nis: number
+  nama_siswa: string
+  nama_lengkap_siswa: string
+  jenis_kelamin: string
+  ttl: string
+  agama: string
+  nama_ibu: string
+  no_hp_ortu: string
+  email_ortu: string
+}

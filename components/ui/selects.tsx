@@ -25,6 +25,7 @@ type SelectSimpleProps = {
   required?: boolean
 }
 
+
 export function Selects({
   data,
   label,
@@ -35,6 +36,10 @@ export function Selects({
   defaultValue,
   required,
 }: SelectSimpleProps) {
+  const dataNull: { label: string; value: string | number | null }[] = [
+  { label: 'pilih', value: null }
+]
+  const dataLabel = [...dataNull, ...data]
   return (
     <div className="flex flex-col gap-1">
       {/* LABEL */}
@@ -55,7 +60,7 @@ export function Selects({
         </SelectTrigger>
 
         <SelectContent>
-          {data.map((item: SelectOption) => (
+          {dataLabel.map((item: SelectOption) => (
             <SelectItem key={item.value} value={String(item.value)}>
               {item.label}
             </SelectItem>
